@@ -13,6 +13,8 @@ let app = express();
 let ofs = require('fs')
 let Notes = require('./models/notes');
 let bodyParser = require('body-parser');
+var cors = require('cors')
+app.use(cors())
 
 app.use((req,res,next)=>{
     res.setHeader('Access-Control-Allow-Origin', '*');
