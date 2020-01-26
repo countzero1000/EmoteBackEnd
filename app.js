@@ -38,16 +38,18 @@ Mongoose.connect(mongoUri, mongoOptions)
 })
 
 
-app.post('/processFrame',upload.single('frame'),(req,res,next)=>{
+app.post('/processFrame',(req,res)=>{
 
-        const formData = req.file;
+       var data = [];
 
-        console.log(formData)
+        req.on('data',(chunk)=> {
+            data.push(chunk)
+        }).on('end', ()=>{
 
-        res.send(formData);
+            var buffer = Buffer.concat(data);
 
-/*
-
+            
+            
             axios.post(cogDetect,buffer,{
                 headers:{
                     'Content-Type' : 'application/octet-stream',
@@ -65,8 +67,10 @@ app.post('/processFrame',upload.single('frame'),(req,res,next)=>{
             }).catch((error)=>{
                 console.log(error.data)
             })
-*/
-                
+
+        })
+
+        
 })
 
 app.post('/getNotes',(req,res)=>{
