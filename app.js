@@ -65,7 +65,7 @@ app.post('/processFrame',(req,res)=>{
                 res.setHeader('Access-Control-Allow-Origin', '*')
                 res.send(cogRes.data[0].faceAttributes.emotion);
             }).catch((error)=>{
-                console.log(error)
+               /// console.log(error)
             })
 
         })
