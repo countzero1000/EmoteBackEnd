@@ -40,7 +40,7 @@ Mongoose.connect(mongoUri, mongoOptions)
 
 app.post('/processFrame',(req,res)=>{
 
-        
+
        var data = [];
 
         req.on('data',(chunk)=> {
@@ -65,7 +65,9 @@ app.post('/processFrame',(req,res)=>{
                 res.setHeader('Access-Control-Allow-Origin', '*')
                 res.send(cogRes.data[0].faceAttributes.emotion);
             }).catch((error)=>{
-                console.log(error.data)
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
             })
 
         })
