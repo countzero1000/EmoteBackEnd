@@ -28,7 +28,7 @@ const mongoOptions = {
     useUnifiedTopology: true
 }
 
-
+app.use(bodyParser({extended:true}))
 
 Mongoose.connect(mongoUri, mongoOptions)
 .then(()=>{
@@ -65,7 +65,6 @@ app.post('/processFrame',(req,res)=>{
                 res.setHeader('Access-Control-Allow-Origin', '*')
                 res.send(cogRes.data[0].faceAttributes.emotion);
             }).catch((error)=>{
-                console.log(error.response.data);
                 console.log(error.response.status);
                 console.log(error.response.headers);
             })
@@ -76,8 +75,10 @@ app.post('/processFrame',(req,res)=>{
 })
 
 app.post('/getNotes',(req,res)=>{
+
     Notes.findOne({mood:req.body.mood})
     .then((note)=>{
+        console.log(note)
         res.send(note);
     })
 })
