@@ -14,6 +14,10 @@ let ofs = require('fs')
 let Notes = require('./models/notes');
 let bodyParser = require('body-parser');
 
+app.use((req,res,next)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    next();
+})
 
 const mongoOptions = {
     useNewUrlParser: true,
@@ -164,25 +168,22 @@ createPerson = (personId) => {
 
 addFace = async (personId,face) => {
 
-    fs.readFile(face).then((data)=>{
-        let url = 'https://tamuhack.cognitiveservices.azure.com/face/v1.0/persongroups/tamugroup/persons'
-        console.log(data)
+    //fs.readFile(face).then((data)=>{
+        let url = 'https://tamuhack.cognitiveservices.azure.com/face/v1.0/persongroups/tamugroup/persons/fakePerson'
+        //console.log(data)
         axios({
             headers:{
-                'Content-Type' : 'application/octet-stream',
+                'Content-Type' : 'application/json',
                 'Ocp-Apim-Subscription-Key' : apiKey,
             },
-            params:{
-                personId: personId
-            },
-            data : data,
+            data : 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
             url :url
         }).catch((error)=>{
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
         });
-    })
+    //})
 }
 
 
