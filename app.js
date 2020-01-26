@@ -28,7 +28,7 @@ const mongoOptions = {
     useUnifiedTopology: true
 }
 
-app.use(bodyParser.raw());
+
 
 Mongoose.connect(mongoUri, mongoOptions)
 .then(()=>{
@@ -38,17 +38,15 @@ Mongoose.connect(mongoUri, mongoOptions)
 })
 
 
-app.post('/processFrame',(req,res)=>{
+app.post('/processFrame',upload.single('frame'),(req,res,next)=>{
 
-        var data = [];
+        const formData = req.file;
 
-        req.on('data',(chunk)=> {
-            data.push(chunk)
-        }).on('end', ()=>{
+        console.log(formData)
 
-            var buffer = Buffer.concat(data);
+        res.send(formData);
 
-            console.log(buffer)
+/*
 
             axios.post(cogDetect,buffer,{
                 headers:{
@@ -65,12 +63,10 @@ app.post('/processFrame',(req,res)=>{
                 res.setHeader('Access-Control-Allow-Origin', '*')
                 res.send(cogRes.data[0].faceAttributes.emotion);
             }).catch((error)=>{
-               /// console.log(error)
+                console.log(error.data)
             })
-
-        })
-
-        
+*/
+                
 })
 
 app.post('/getNotes',(req,res)=>{
