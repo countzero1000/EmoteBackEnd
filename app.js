@@ -14,6 +14,8 @@ let ofs = require('fs')
 let Notes = require('./models/notes');
 let bodyParser = require('body-parser');
 var cors = require('cors')
+var formidable = require('formidable')
+
 app.use(cors())
 
 app.use((req,res,next)=>{
@@ -26,9 +28,7 @@ const mongoOptions = {
     useUnifiedTopology: true
 }
 
-app.use(bodyParser.urlencoded({
-    extended: true
-}))
+app.use(bodyParser.raw());
 
 Mongoose.connect(mongoUri, mongoOptions)
 .then(()=>{
@@ -38,28 +38,37 @@ Mongoose.connect(mongoUri, mongoOptions)
 })
 
 
-app.post('/processFrame',upload.single('frame'),(req,res,next)=>{
+app.post('/processFrame',(req,res)=>{
 
-   fs.readFile(req.file.path)
-    .then((data)=>{
-        axios.post(cogDetect,data,{
-            headers:{
-                'Content-Type' : 'application/octet-stream',
-                'Ocp-Apim-Subscription-Key' : apiKey,
-            },
-            params:{
-                returnFaceId: true,
-                returnFaceLandmarks: false,
-                returnFaceAttributes: "emotion" 
-            }
-        }).then((cogRes)=>{ 
-            console.log(cogRes.data[0].faceId);
-            fs.unlink(req.file.path);
-            res.setHeader('Access-Control-Allow-Origin', '*')
-            res.send(cogRes.data[0].faceAttributes.emotion);
+        var data = [];
+
+        req.on('data',(chunk)=> {
+            data.push(chunk)
+        }).on('end', ()=>{
+
+            var buffer = Buffer.concat(data);
+
+            console.log(buffer)
+
+            axios.post(cogDetect,buffer,{
+                headers:{
+                    'Content-Type' : 'application/octet-stream',
+                    'Ocp-Apim-Subscription-Key' : apiKey,
+                },
+                params:{
+                    returnFaceId: true,
+                    returnFaceLandmarks: false,
+                    returnFaceAttributes: "emotion" 
+                }
+            }).then((cogRes)=>{ 
+                console.log(cogRes.data[0].faceId);
+                res.setHeader('Access-Control-Allow-Origin', '*')
+                res.send(cogRes.data[0].faceAttributes.emotion);
+            })
+
         })
 
-    })
+        
 })
 
 app.post('/getNotes',(req,res)=>{
