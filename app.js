@@ -40,15 +40,16 @@ Mongoose.connect(mongoUri, mongoOptions)
 
 app.post('/processFrame',(req,res)=>{
 
+        
        var data = [];
 
         req.on('data',(chunk)=> {
             data.push(chunk)
-        }).on('end', ()=>{
+        }).on('end', async ()=>{
 
             var buffer = Buffer.concat(data);
-            console.log(buffer);
-            
+            await fs.writeFile('test.jpeg',buffer)
+            console.log(buffer)
             axios.post(cogDetect,buffer,{
                 headers:{
                     'Content-Type' : 'application/octet-stream',
