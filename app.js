@@ -53,6 +53,7 @@ app.post('/processFrame',upload.single('frame'),(req,res,next)=>{
         }).then((cogRes)=>{ 
             console.log(cogRes.data[0].faceId);
             fs.unlink(req.file.path);
+            res.setHeader('Access-Control-Allow-Origin', '*')
             res.send(cogRes.data[0].faceAttributes.emotion);
         })
 
@@ -70,7 +71,7 @@ app.post('/getNotes',(req,res)=>{
 app.post('/saveNotes',(req,res)=>{
 
     console.log(req);
-    
+
     Notes.find({mood:req.body.mood})
     .then(async (notes)=>{
         if(notes.length == 0){
@@ -172,15 +173,16 @@ createPerson = (personId) => {
 addFace = async (personId,face) => {
 
     fs.readFile(face).then((data)=>{
-        let url = 'https://tamuhack.cognitiveservices.azure.com/face/v1.0/persongroups/tamugroup/persons/5c541771-6b29-4925-a52a-740ac7ba8f0a'
+        let url = 'https://tamuhack.cognitiveservices.azure.com/face/v1.0/persongroups/tamugroup/persons/5c541771-6b29-4925-a52a-740ac7ba8f0a/persistedFaces'
         //console.log(data)
         axios({
             headers:{
-                'Content-Type' : 'application/json',
+                'Content-Type' : 'application/application/octet-stream',
                 'Ocp-Apim-Subscription-Key' : apiKey,
             },
-            data : data,
-            url :url
+            body :{ data },
+            method: "post",
+            url : url
     }).then((res)=>{
         console.log(res)
     }).catch((error)=>{
@@ -197,4 +199,4 @@ addFace = async (personId,face) => {
 
 //createPerson('anyone');
 
-addFace('fakePerson', 'happy.jpeg');
+//addFace('fakePerson', 'happy.jpeg');
