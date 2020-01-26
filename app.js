@@ -16,7 +16,7 @@ let bodyParser = require('body-parser');
 
 app.use((req,res,next)=>{
     res.setHeader('Access-Control-Allow-Origin', '*');
-    next();
+  next();
 })
 
 const mongoOptions = {
@@ -68,6 +68,9 @@ app.post('/getNotes',(req,res)=>{
 
 
 app.post('/saveNotes',(req,res)=>{
+
+    console.log(req);
+    
     Notes.find({mood:req.body.mood})
     .then(async (notes)=>{
         if(notes.length == 0){
@@ -168,22 +171,24 @@ createPerson = (personId) => {
 
 addFace = async (personId,face) => {
 
-    //fs.readFile(face).then((data)=>{
-        let url = 'https://tamuhack.cognitiveservices.azure.com/face/v1.0/persongroups/tamugroup/persons/fakePerson'
+    fs.readFile(face).then((data)=>{
+        let url = 'https://tamuhack.cognitiveservices.azure.com/face/v1.0/persongroups/tamugroup/persons/5c541771-6b29-4925-a52a-740ac7ba8f0a'
         //console.log(data)
         axios({
             headers:{
                 'Content-Type' : 'application/json',
                 'Ocp-Apim-Subscription-Key' : apiKey,
             },
-            data : 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+            data : data,
             url :url
-        }).catch((error)=>{
+    }).then((res)=>{
+        console.log(res)
+    }).catch((error)=>{
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
         });
-    //})
+    })
 }
 
 
