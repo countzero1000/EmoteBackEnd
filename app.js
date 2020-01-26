@@ -47,8 +47,7 @@ app.post('/processFrame',(req,res)=>{
         }).on('end', ()=>{
 
             var buffer = Buffer.concat(data);
-
-            
+            console.log(buffer);
             
             axios.post(cogDetect,buffer,{
                 headers:{
